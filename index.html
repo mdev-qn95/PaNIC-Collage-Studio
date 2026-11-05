@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<title>PaNIC Collage Studio — Ghép ảnh đẹp cho mọi khoảnh khắc</title>
+<meta name="description" content="Ghép ảnh online miễn phí với hơn 45 mẫu đẹp: photo dump, 4-cut photobooth, cuộn film, scrapbook, sinh nhật, sự kiện, du lịch, ảnh cổng cưới & standee. Xuất ảnh nét cho TikTok, Facebook và in ấn.">
+<meta name="theme-color" content="#f6f3ee">
+<link rel="canonical" href="https://panic-collage-studio.vercel.app/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PaNIC Collage Studio">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:url" content="https://panic-collage-studio.vercel.app/">
+<meta property="og:title" content="PaNIC Collage Studio — Ghép ảnh đẹp cho mọi khoảnh khắc">
+<meta property="og:description" content="Hơn 45 mẫu ghép ảnh: photo dump, 4-cut, film, sinh nhật, sự kiện, du lịch, ảnh cổng cưới & standee. Làm ngay trên điện thoại.">
+<meta property="og:image" content="https://panic-collage-studio.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PaNIC Collage Studio — các mẫu ghép ảnh">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PaNIC Collage Studio — Ghép ảnh đẹp cho mọi khoảnh khắc">
+<meta name="twitter:description" content="Hơn 45 mẫu ghép ảnh đẹp, làm ngay trên điện thoại.">
+<meta name="twitter:image" content="https://panic-collage-studio.vercel.app/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Dancing+Script:wght@500&family=Great+Vibes&family=Lora:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600&family=Noto+Serif+Display:ital,wght@0,300;0,400;1,300&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=3eb3a511">
+</head>
+<body>
+<div class="app">
+  <header>
+    <button class="brand" id="brand" aria-label="Chọn dịp"><img src="favicon.svg" alt=""><span><b>PaNIC <i>Collage</i></b><small>Studio ghép ảnh</small></span></button>
+    <button class="szbtn" id="szbtn" aria-label="Đổi kích thước"><b id="szlabel"></b><small id="szsub"></small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 10l5 5 5-5"/></svg></button>
+<div class="slotbar" id="slotbar">
+      <button id="sbRep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/></svg><span>Thay ảnh</span></button>
+            <svg class="zi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5M11 8.5v5"/></svg>
+      <input type="range" id="sbZoom" min="1" max="4" step=".01" value="1" aria-label="Phóng to">
+      <button id="sbCtr" aria-label="Căn giữa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></button>
+      <button id="sbX" aria-label="Bỏ chọn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <button class="iconbtn" id="btnFocus" title="Xem toàn màn hình" aria-label="Xem toàn màn hình"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button class="cta" id="btnExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 8.5 12 4l4.5 4.5M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg><span>Xuất</span></button>
+  </header>
+  <main id="stage">
+    <div class="hint" id="hint">Chạm ảnh để chọn rồi kéo để căn · vuốt ngang để đổi mẫu</div>
+    <div id="device"><div class="legs"><span></span><span></span><span></span></div><canvas id="cv" aria-label="Xem trước ảnh ghép"></canvas><div class="feet"><span></span><span></span></div></div>
+
+    <button class="focusx" id="focusX">Thoát xem toàn màn hình ✕</button>
+    <button class="navbtn prev" id="navPrev" aria-label="Mẫu trước"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="navbtn next" id="navNext" aria-label="Mẫu sau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    <div class="tplname" id="tplname"></div>
+  </main>
+  <section id="sheet" data-mode="peek">
+    <div id="grip"><div class="grab"></div><div class="phead"><h3 id="ptitle">Mẫu ghép</h3><span id="psub"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 14l5-5 5 5"/></svg></div></div>
+    <div class="panel" id="panel"></div>
+  </section>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+<input type="file" id="file" accept="image/*" multiple hidden>
+<div class="toast" id="toast"></div>
+<div class="busy" id="busy"><div class="spin"></div><span id="busytxt">Đang xử lý…</span></div>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<script src="assets/js/data.js?v=3eb3a511"></script>
+<script src="assets/js/engine.js?v=3eb3a511"></script>
+<script src="assets/js/templates.js?v=3eb3a511"></script>
+<script src="assets/js/app.js?v=3eb3a511"></script>
+</body>
+</html>
