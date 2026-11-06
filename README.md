@@ -52,7 +52,7 @@ Không cần đăng ký, không cài app. Ảnh của bạn được xử lý ng
 ### 💍 Cưới hỏi — ảnh cổng & standee
 <img src="docs/wedding.webp" alt="Mẫu cưới hỏi: love story, ba khung cổ điển, vòm, dải chữ, lưới thẻ giữa, một ảnh ấn tượng" width="100%">
 
-Bộ 15 mẫu lấy cảm hứng từ các tiệm in ảnh cưới: Love Story, Ba khung cổ điển, Vòm cổ điển, Monogram, Chú rể · Cô dâu, Polaroid kỷ niệm… Xem trước trên standee chân nhôm hoặc giá vẽ gỗ trước khi mang đi in.
+Bộ 15 mẫu lấy cảm hứng từ các tiệm in ảnh cưới: Love Story, Ba khung cổ điển, Vòm cổ điển, Monogram, Chú rể · Cô dâu, Polaroid kỷ niệm… Chọn khổ standee hoặc ảnh cổng để thiết kế và xuất file mang đi in.
 
 <br>
 

@@ -35,20 +35,20 @@ const FP={
 };
 
 const SIZES={
-  tt:{n:'Story · TikTok',sub:'1080 × 1920 · 9:16',w:1080,h:1920,u:'px',k:'phone',g:'Mạng xã hội'},
-  fb:{n:'Bài đăng 4:5',sub:'1080 × 1350',w:1080,h:1350,u:'px',k:'social',g:'Mạng xã hội'},
-  sq:{n:'Vuông 1:1',sub:'1080 × 1080',w:1080,h:1080,u:'px',k:'social',g:'Mạng xã hội'},
-  wide:{n:'Ngang 16:9',sub:'1920 × 1080',w:1920,h:1080,u:'px',k:'social',g:'Mạng xã hội'},
-  p10:{n:'Ảnh in 10×15',sub:'10 × 15 cm',w:10,h:15,u:'cm',k:'print',g:'In ảnh'},
-  p10l:{n:'Ảnh in 15×10',sub:'15 × 10 cm · ngang',w:15,h:10,u:'cm',k:'print',g:'In ảnh'},
-  p13:{n:'Ảnh in 13×18',sub:'13 × 18 cm',w:13,h:18,u:'cm',k:'print',g:'In ảnh'},
-  p20:{n:'Ảnh in 20×30',sub:'20 × 30 cm',w:20,h:30,u:'cm',k:'print',g:'In ảnh'},
-  st80:{n:'Standee 80×180',sub:'80 × 180 cm',w:80,h:180,u:'cm',k:'standee',g:'In lớn · sự kiện'},
-  st60:{n:'Standee 60×160',sub:'60 × 160 cm',w:60,h:160,u:'cm',k:'standee',g:'In lớn · sự kiện'},
-  g60:{n:'Ảnh cổng 60×90',sub:'60 × 90 cm',w:60,h:90,u:'cm',k:'easel',g:'In lớn · sự kiện'},
-  g50:{n:'Ảnh cổng 50×70',sub:'50 × 70 cm',w:50,h:70,u:'cm',k:'easel',g:'In lớn · sự kiện'},
-  a3:{n:'A3 · A4',sub:'29.7 × 42 cm',w:29.7,h:42,u:'cm',k:'easel',g:'In lớn · sự kiện'},
-  custom:{n:'Tuỳ chỉnh',sub:'nhập kích thước cm',w:60,h:90,u:'cm',k:'print',g:'Tuỳ chỉnh'},
+  tt:{n:'Story · TikTok',sub:'1080 × 1920 · 9:16',w:1080,h:1920,u:'px',g:'Mạng xã hội'},
+  fb:{n:'Bài đăng 4:5',sub:'1080 × 1350',w:1080,h:1350,u:'px',g:'Mạng xã hội'},
+  sq:{n:'Vuông 1:1',sub:'1080 × 1080',w:1080,h:1080,u:'px',g:'Mạng xã hội'},
+  wide:{n:'Ngang 16:9',sub:'1920 × 1080',w:1920,h:1080,u:'px',g:'Mạng xã hội'},
+  p10:{n:'Ảnh in 10×15',sub:'10 × 15 cm',w:10,h:15,u:'cm',g:'In ảnh'},
+  p10l:{n:'Ảnh in 15×10',sub:'15 × 10 cm · ngang',w:15,h:10,u:'cm',g:'In ảnh'},
+  p13:{n:'Ảnh in 13×18',sub:'13 × 18 cm',w:13,h:18,u:'cm',g:'In ảnh'},
+  p20:{n:'Ảnh in 20×30',sub:'20 × 30 cm',w:20,h:30,u:'cm',g:'In ảnh'},
+  st80:{n:'Standee 80×180',sub:'80 × 180 cm',w:80,h:180,u:'cm',g:'In lớn · sự kiện'},
+  st60:{n:'Standee 60×160',sub:'60 × 160 cm',w:60,h:160,u:'cm',g:'In lớn · sự kiện'},
+  g60:{n:'Ảnh cổng 60×90',sub:'60 × 90 cm',w:60,h:90,u:'cm',g:'In lớn · sự kiện'},
+  g50:{n:'Ảnh cổng 50×70',sub:'50 × 70 cm',w:50,h:70,u:'cm',g:'In lớn · sự kiện'},
+  a3:{n:'A3 · A4',sub:'29.7 × 42 cm',w:29.7,h:42,u:'cm',g:'In lớn · sự kiện'},
+  custom:{n:'Tuỳ chỉnh',sub:'nhập kích thước cm',w:60,h:90,u:'cm',g:'Tuỳ chỉnh'},
 };
 
 const FILTERS={

@@ -6,9 +6,8 @@ document.addEventListener('dblclick',e=>{if(!e.target.closest('input,textarea,[c
 /* ===== Sân khấu xem trước ===== */
 const cv=$('#cv'),dev=$('#device'),stage=$('#stage');let cssW=0,cssH=0,dpr=1,raf=0,tab='tpl',uploadTarget=null,pid=1;
 function fitStage(){
-  const r=stage.getBoundingClientRect(),ar=ratio(),k=sz().k,mock=S.mock;
-  dev.className=mock?'mock-'+k:'';
-  const top=mock&&k==='standee'?22:14,bot=mock?(k==='standee'?50:k==='easel'?46:18):14,side=mock&&k==='easel'?34:14;
+  const r=stage.getBoundingClientRect(),ar=ratio();
+  const top=14,bot=14,side=14;
   const sbH=0;let h=r.height-top-bot-sbH,w=h/ar;if(w>r.width-2*side){w=r.width-2*side;h=w*ar}
   w=Math.max(40,w);h=Math.max(40,h);cssW=w;cssH=h;
   dev.style.width=w+'px';dev.style.height=h+'px';dev.style.top=(top+(r.height-top-bot-sbH)/2)+'px';
@@ -185,14 +184,12 @@ function renderPanel(){
   else if(tab==='size'){
     const card=([k,v])=>{const r=v.h/v.w,h=r>=1?Math.min(34,22*r):22*r,w=r>=1?h/r:24;
       return`<button class="szc${k===S.size?' on':''}" data-s="${k}"><span class="ic"><i style="width:${w}px;height:${h}px"></i></span><span><b>${v.n}</b><small>${k==='custom'?`${S.custW} × ${S.custH} cm`:v.sub}</small></span></button>`};
-    const mockT=`<div class="toggle"><span>Xem mockup (standee, giá vẽ, điện thoại)</span><button class="sw2${S.mock?' on':''}" id="mock"></button></div>`;
-    if(peek)P.innerHTML=`<div class="hstrip">${Object.entries(SIZES).filter(([k])=>k!=='custom').map(card).join('')}<button class="more" data-full>Tuỳ chỉnh<br>& mockup ›</button></div>`;
+    if(peek)P.innerHTML=`<div class="hstrip">${Object.entries(SIZES).filter(([k])=>k!=='custom').map(card).join('')}<button class="more" data-full>Tuỳ chỉnh<br>kích thước ›</button></div>`;
     else{const groups={};Object.entries(SIZES).forEach(([k,v])=>(groups[v.g]=groups[v.g]||[]).push([k,v]));
-      P.innerHTML=mockT+Object.entries(groups).map(([g,list])=>`<div class="group-t" style="margin-top:14px">${g}</div><div class="sizes">${list.map(card).join('')}</div>`).join('')+
+      P.innerHTML=Object.entries(groups).map(([g,list])=>`<div class="group-t" style="margin-top:14px">${g}</div><div class="sizes">${list.map(card).join('')}</div>`).join('')+
        `<div class="row2" id="cust" style="${S.size==='custom'?'':'display:none'}"><label class="field"><span>Rộng (cm)</span><input type="number" inputmode="decimal" id="cw" value="${S.custW}"></label><label class="field"><span>Cao (cm)</span><input type="number" inputmode="decimal" id="ch" value="${S.custH}"></label></div>`}
     P.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.size=b.dataset.s;if(isLand()&&!tplById(S.tpl).land){const t=visibleTpls()[0];if(t){S.tpl=t.id;toast(`Chuyển sang mẫu “${t.n}” hợp khổ ngang`)}}save();
       P.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('on',x===b));if($('#cust'))$('#cust').style.display=S.size==='custom'?'':'none';fitStage();refreshThumbs()});
-    if($('#mock'))$('#mock').onclick=()=>{S.mock=!S.mock;save();$('#mock').classList.toggle('on',S.mock);fitStage()};
     if($('#cw')){const cu=()=>{S.custW=clamp(+$('#cw').value||60,5,500);S.custH=clamp(+$('#ch').value||90,5,500);save();fitStage();refreshThumbs()};$('#cw').onchange=cu;$('#ch').onchange=cu}
   }
   else if(tab==='export'){

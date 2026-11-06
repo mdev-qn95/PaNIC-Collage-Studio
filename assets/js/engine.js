@@ -1,10 +1,10 @@
 'use strict';
 /* ===== Trạng thái ===== */
 const STORE='panic-collage-v2';
-const DEF={tpl:'dump',cat:'all',size:'fb',pal:'linen',fp:'didone',gap:14,margin:64,radius:0,tscale:1,demo:true,mock:true,
+const DEF={tpl:'dump',cat:'all',size:'fb',pal:'linen',fp:'didone',gap:14,margin:64,radius:0,tscale:1,demo:true,
   dpi:150,mult:1,fmt:'image/jpeg',custW:60,custH:90,cbg:null,ctext:null,caccent:null,filter:'none',grain:false,stamp:false,texts:{},seen:false};
 let S=JSON.parse(JSON.stringify(DEF));
-try{const o=JSON.parse(localStorage.getItem(STORE)||'null');if(o)S={...S,...o,texts:{...(o.texts||{})}}}catch(e){}
+try{const o=JSON.parse(localStorage.getItem(STORE)||'null');if(o){const {mock,...settings}=o;S={...S,...settings,texts:{...(o.texts||{})}}}}catch(e){}
 const save=()=>{try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}};
 let photos=[],slotState={},sel=null,lastSlots=[];
 const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
