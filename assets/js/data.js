@@ -56,13 +56,13 @@ const FILTERS={
   vivid:{n:'Rực rỡ'},fade:{n:'Mờ sương'},vintage:{n:'Hoài cổ'},bw:{n:'Đen trắng'},
 };
 
-/* nội dung mẫu theo dịp — người dùng sửa sẽ được lưu riêng cho từng dịp */
+/* Dữ liệu minh hoạ hư cấu theo dịp; nội dung người dùng sửa được lưu riêng cho từng dịp. */
 const TEXTS={
-  wedding:{n1:'Văn Phú',n2:'Thu Thanh',fn1:'Thái Văn Phú',fn2:'Nguyễn Thị Thu Thanh',nick:'',date:'16 · 06 · 2024',head:'Welcome to our wedding',script:'Love story',tag:'Save the date',
+  wedding:{n1:'Minh Khang',n2:'Thảo Vy',fn1:'Nguyễn Minh Khang',fn2:'Trần Thảo Vy',nick:'',date:'20 · 12 · 2026',head:'Welcome to our wedding',script:'Love story',tag:'Save the date',
     quote:'Từ khoảnh khắc tìm thấy nhau, chúng mình tin vào một tình yêu an hoà và bền vững — cùng nhau xây dựng một mái nhà trọn vẹn.',
-    l1:'Groom',l2:'Bride',mono:'',big:'2024',sub:'Lễ thành hôn',place:'Quy Nhơn',caps:''},
-  birthday:{n1:'Thanh Tùng',n2:'',fn1:'Thái Thanh Tùng',fn2:'',nick:'NIC',big:'1',head:'Happy Birthday',script:'Cheers to 1',date:'02 · 12 · 2026',sub:'Birthday Issue',
-    quote:'Một năm đầu đời của NIC — thật nhiều tiếng cười, thật nhiều yêu thương và thật khoẻ mạnh nhé!',tag:'#NIC1tuoi',place:'Nhà hàng Mây · 18:30',l1:'',l2:'',mono:'',caps:'Biệt danh: NIC,Ngày sinh: 02.12.2025,Tài lẻ: cười tít mắt'},
+    l1:'Groom',l2:'Bride',mono:'',big:'2026',sub:'Lễ thành hôn',place:'Địa điểm tổ chức',caps:''},
+  birthday:{n1:'Bảo Anh',n2:'',fn1:'Nguyễn Bảo Anh',fn2:'',nick:'Bông',big:'1',head:'Happy Birthday',script:'Cheers to 1',date:'05 · 11 · 2026',sub:'Birthday Issue',
+    quote:'Chúc Bảo Anh tuổi mới thật nhiều tiếng cười, yêu thương và những điều ngọt ngào!',tag:'#BaoAnhBirthday',place:'Không gian tiệc · 18:00',l1:'',l2:'',mono:'',caps:'Sở thích: khám phá,Món ngon: bánh ngọt,Tài lẻ: cười tít mắt'},
   event:{n1:'PaNIC Team',n2:'',head:'Year End Party',script:'Thank you',sub:'Gala 2026',date:'28 · 12 · 2026',place:'Hội An, Quảng Nam',
     tag:'#PaNICYEP2026',quote:'Một năm rực rỡ cùng nhau — cảm ơn từng người đã góp mặt.',big:'2026',l1:'',l2:'',mono:'',caps:''},
   daily:{n1:'Ngọc Hân',n2:'',head:'Photo dump',script:'little things',sub:'Tháng mười một',date:'05.11.2026',tag:'#chill',

@@ -22,7 +22,7 @@ function context(engine, data, userAgent, stored) {
   vm.runInContext(`const cv=$('#cv'),dev=$('#device'),stage=$('#stage');let cssW=0,cssH=0,dpr=1;const draw=()=>{};`,c);
   return {c,node,saved:()=>saved};
 }
-const settings={mock:true,tpl:'dump',size:'custom',custW:71,custH:123,texts:{birthday:{n1:'THÁI THANH TÙNG'}},pal:'party',gap:21,filter:'film',seen:true};
+const settings={mock:true,tpl:'dump',size:'custom',custW:71,custH:123,texts:{birthday:{n1:'NGUYỄN BẢO ANH'}},pal:'party',gap:21,filter:'film',seen:true};
 let checks=0;
 for(const userAgent of ['Desktop','iPhone']) {
   const old=context(baseline('assets/js/engine.js'),baseline('assets/js/data.js'),userAgent,{...settings,mock:false});
