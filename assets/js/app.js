@@ -45,7 +45,7 @@ $('#file').addEventListener('change',async ev=>{
   const files=[...ev.target.files];ev.target.value='';if(!files.length)return;toast('Đang nạp ảnh…');const added=[];
   for(const f of files){try{added.push(await loadPhoto(f))}catch(e){}}
   photos.push(...added);if(uploadTarget!=null&&added[0])Object.assign(ens(uploadTarget),{pid:added[0].id,z:1,ox:0,oy:0});
-  uploadTarget=null;toast(added.length?`Đã thêm ${added.length} ảnh ✦`:'Không đọc được ảnh này. Hãy chọn ảnh JPG hoặc PNG khác.',added.length?'success':'danger');draw();refreshThumbs();if(tab==='photo')renderPanel()});
+  uploadTarget=null;toast(added.length?`Đã thêm ${added.length} ảnh ✦`:'Không đọc được ảnh này');draw();refreshThumbs();if(tab==='photo')renderPanel()});
 function loadPhoto(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file),img=new Image();
   img.onload=()=>{const MAX=isIOS?2400:3600,k=Math.min(1,MAX/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');
     c.width=Math.round(img.naturalWidth*k);c.height=Math.round(img.naturalHeight*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
@@ -72,16 +72,14 @@ const CAT_ICO={
 };
 
 const TABS=[['tpl','Mẫu'],['photo','Ảnh'],['text','Chữ'],['color','Phong cách'],['size','Kích thước'],['export','Xuất']];
-$('#tabs').innerHTML=TABS.map(([k,n])=>`<button class="tab pn-bottom-nav__item" data-t="${k}">${ICO[k]}<span>${n}</span></button>`).join('');
+$('#tabs').innerHTML=TABS.map(([k,n])=>`<button class="tab" data-t="${k}">${ICO[k]}<span>${n}</span></button>`).join('');
 const sheet=$('#sheet'),mob=()=>innerWidth<900,PEEK={tpl:232,photo:150,color:226,size:150,export:164};
 function sheetH(m){if(m==='closed')return 0;const max=Math.round(innerHeight*(m==='peek'?.42:.62)),P=$('#panel');if(!P||sheet.dataset.mode!==m)return m==='peek'?(PEEK[tab]||200):max;const top=P.getBoundingClientRect().top;let b=0;for(const el of P.children)b=Math.max(b,el.getBoundingClientRect().bottom);return Math.min(max,Math.round(grip.offsetHeight+b-top+P.scrollTop+20))}
 function setMode(m,keep){if(!mob())m='full';sheet.dataset.mode=m;renderPanel();sheet.style.setProperty('--dh',sheetH(m)+'px');syncTabs();syncSlotbar();if(!keep)$('#panel').scrollTop=0}
 $('#tabs').addEventListener('click',ev=>{const b=ev.target.closest('.tab');if(!b)return;const k=b.dataset.t;
   if(mob()&&k===tab&&sheet.dataset.mode!=='closed'){setMode('closed');return}tab=k;setMode(mob()&&PEEK[k]?'peek':'full')});
 function openTab(k,keep){tab=k;setMode(mob()&&PEEK[k]?'peek':'full',keep)}
-function syncTabs(){const closed=sheet.dataset.mode==='closed';document.querySelectorAll('.tab').forEach(b=>b.dataset.t===tab&&!closed?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
-  /* mỗi màn hình một nút chính: khi đang mở bảng Xuất, nút Xuất trong bảng là nút chính */
-  const ex=tab==='export'&&!closed;$('#btnExport').classList.toggle('pn-btn--primary',!ex);$('#btnExport').classList.toggle('pn-btn--soft',ex)}
+function syncTabs(){const closed=sheet.dataset.mode==='closed';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab&&!closed))}
 /* kéo tay nắm để đổi chiều cao ngăn kéo */
 let gd=null;const grip=$('#grip');
 grip.addEventListener('pointerdown',e=>{if(!mob())return;gd={y:e.clientY,h:sheet.getBoundingClientRect().height,moved:false};sheet.classList.add('drag');grip.setPointerCapture(e.pointerId)});
@@ -93,7 +91,7 @@ grip.addEventListener('pointerup',gEnd);grip.addEventListener('pointercancel',gE
 /* thanh công cụ khung ảnh nổi trên sân khấu */
 function sbVis(){return sel!=null&&!document.body.classList.contains('focus')&&!(mob()&&sheet.dataset.mode==='full')}
 let sbWas=false;
-function syncSlotbar(){const bar=$('#slotbar'),v=sel!=null&&!document.body.classList.contains('focus');bar.classList.toggle('show',v);document.body.classList.toggle('has-sel',v);if(sel!=null){const z=$('#sbZoom'),v=(slotState[sel]||{}).z||1;if(+z.value!==v)z.value=v;z.style.setProperty('--_p',(v-1)/3*100+'%')}}
+function syncSlotbar(){const bar=$('#slotbar'),v=sel!=null&&!document.body.classList.contains('focus');bar.classList.toggle('show',v);document.body.classList.toggle('has-sel',v);if(sel!=null){const z=$('#sbZoom'),v=(slotState[sel]||{}).z||1;if(+z.value!==v)z.value=v;0}}
 $('#sbZoom').oninput=e=>{if(sel==null)return;ens(sel).z=+e.target.value;syncZoom();draw()};
 $('#sbRep').onclick=()=>{if(sel==null)return;if(photos.length){tab='photo';setMode(mob()?'peek':'full')}else{uploadTarget=sel;$('#file').click()}};
 $('#sbCtr').onclick=()=>{if(sel==null)return;Object.assign(ens(sel),{z:1,ox:0,oy:0});draw()};
@@ -114,11 +112,11 @@ function renderPanel(){
   const T0={tpl:['Mẫu ghép',`${visibleTpls().length} bố cục`],photo:['Ảnh của bạn',photos.length?`${photos.length} ảnh`:'đang dùng ảnh mẫu'],text:['Nội dung chữ',cat?cat.n:''],color:['Phong cách','màu · bộ lọc · font'],size:['Kích thước','mạng xã hội & in ấn'],export:['Xuất ảnh','tải về hoặc chia sẻ']}[tab];
   $('#ptitle').textContent=T0[0];$('#psub').textContent=T0[1];
   if(tab==='tpl'){
-    const list=visibleTpls(),cats=`<div class="cats">${CATS.map(c=>`<button class="pn-chip" aria-pressed="${c.id===S.cat}" data-c="${c.id}">${c.n}</button>`).join('')}</div>`;
+    const list=visibleTpls(),cats=`<div class="cats">${CATS.map(c=>`<button class="chip${c.id===S.cat?' on':''}" data-c="${c.id}">${c.n}</button>`).join('')}</div>`;
     P.innerHTML=peek
       ?cats+`<div class="hstrip">${list.map(t=>`<button class="tcard sm${t.id===S.tpl?' on':''}" data-id="${t.id}"><div class="tthumb"><canvas></canvas></div><b>${t.n}</b></button>`).join('')}</div>`
       :cats+(isLand()?'<p class="note" style="margin:0 0 12px">Khổ ngang — đang hiện các mẫu hợp với ảnh ngang.</p>':'')+
-       `<div class="tgrid">${list.map(t=>`<button class="tcard${t.id===S.tpl?' on':''}" data-id="${t.id}"><div class="tthumb"><span class="pn-badge">${CATS.find(c=>c.id===t.cat).n}</span><canvas></canvas></div><b>${t.n}</b><small>${t.best||''}</small></button>`).join('')}</div>`;
+       `<div class="tgrid">${list.map(t=>`<button class="tcard${t.id===S.tpl?' on':''}" data-id="${t.id}"><div class="tthumb"><span class="badge">${CATS.find(c=>c.id===t.cat).n}</span><canvas></canvas></div><b>${t.n}</b><small>${t.best||''}</small></button>`).join('')}</div>`;
     P.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.c;save();renderPanel()});
     P.querySelectorAll('.tcard').forEach(b=>b.onclick=()=>{P.querySelectorAll('.tcard').forEach(x=>x.classList.toggle('on',x===b));selectTpl(b.dataset.id)});
     const on=P.querySelector('.tcard.on');if(peek&&on)on.scrollIntoView({inline:'center',block:'nearest'});
@@ -131,30 +129,27 @@ function renderPanel(){
       P.innerHTML=`<div class="hstrip phs"><button class="addph" id="upAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>Thêm ảnh</span></button>${lib}
         <div class="pnote">${sel!=null?(photos.length?'Chạm một ảnh để đặt vào khung đang chọn':'Thêm ảnh để thay vào khung đang chọn'):(photos.length?'Chạm khung trong thiết kế để chọn · kéo để căn':'Chọn nhiều ảnh cùng lúc — ảnh tự xếp vào các khung')}</div></div>`;
     }else{
-      P.innerHTML=`<button class="pn-dropzone upl" id="upAll">${ICO.photo}<strong>Chọn ảnh từ máy</strong><span>Chọn nhiều ảnh cùng lúc — tự xếp vào khung</span></button>
-       <p class="pn-callout pn-callout--primary note" style="margin:14px 0">✦ Chạm một khung trong thiết kế để chọn — thanh công cụ hiện ngay trên ảnh để thay, phóng to, căn giữa. Kéo để căn chỉnh, 2 ngón để zoom.</p>
+      P.innerHTML=`<button class="upl" id="upAll"><span class="pl">${ICO.photo}</span><span><b>Chọn ảnh từ máy</b><small>Chọn nhiều ảnh cùng lúc — tự xếp vào khung</small></span></button>
+       <p class="note" style="margin:14px 0">✦ Chạm một khung trong thiết kế để chọn — thanh công cụ hiện ngay trên ảnh để thay, phóng to, căn giữa. Kéo để căn chỉnh, 2 ngón để zoom.</p>
        <div class="lib">${lib}</div>
-       ${photos.length?`<div class="pn-row" style="--pn-gap:8px;margin-top:14px"><button class="pn-btn pn-btn--sm" id="shuf">✧ Xáo trộn</button><button class="pn-btn pn-btn--sm" id="auto">Xếp lại theo thứ tự</button><button class="pn-btn pn-btn--sm pn-btn--ghost" id="clr">Xoá tất cả</button></div>`:''}
-       <label class="pn-switch toggle" style="margin-top:8px"><span>Hiện ảnh mẫu ở khung trống</span><input type="checkbox" id="demo"${S.demo?' checked':''}></label>`;
+       ${photos.length?`<div class="chips" style="margin-top:14px"><button class="chip" id="shuf">✧ Xáo trộn</button><button class="chip" id="auto">Xếp lại theo thứ tự</button><button class="chip" id="clr">Xoá tất cả</button></div>`:''}
+       <div class="toggle" style="margin-top:8px"><span>Hiện ảnh mẫu ở khung trống</span><button class="sw2${S.demo?' on':''}" id="demo" aria-label="Ảnh mẫu"></button></div>`;
     }
     $('#upAll').onclick=()=>{uploadTarget=sel;$('#file').click()};
-    /* pn-dropzone: thả ảnh vào thì nạp qua đúng luồng của ô chọn file */
-    const up=$('#upAll');up.ondragover=e=>{e.preventDefault();up.dataset.dragover='true'};up.ondragleave=()=>delete up.dataset.dragover;
-    up.ondrop=e=>{e.preventDefault();delete up.dataset.dragover;uploadTarget=sel;const f=$('#file');f.files=e.dataTransfer.files;f.dispatchEvent(new Event('change'))};
     P.querySelectorAll('.ph').forEach(el=>el.onclick=ev=>{const d=ev.target.dataset.del;
       if(d){photos=photos.filter(q=>q.id!=d);Object.values(slotState).forEach(s=>{if(s.pid==d)s.pid=null});renderPanel();draw();refreshThumbs();return}
       if(sel!=null){Object.assign(ens(sel),{pid:+el.dataset.id,z:1,ox:0,oy:0});renderPanel();draw()}else toast('Chạm vào một khung ảnh trước nhé')});
     if($('#shuf')){$('#shuf').onclick=()=>{const ids=photos.map(q=>q.id).sort(()=>Math.random()-.5);slotState={};for(let i=0;i<40;i++)ens(i).pid=ids[i%ids.length];draw();refreshThumbs()};
       $('#auto').onclick=()=>{slotState={};draw();refreshThumbs()};$('#clr').onclick=()=>{photos=[];slotState={};sel=null;renderPanel();draw();refreshThumbs()}}
-    if($('#demo'))$('#demo').onchange=()=>{S.demo=$('#demo').checked;save();renderPanel();draw();refreshThumbs()};
+    if($('#demo'))$('#demo').onclick=()=>{S.demo=!S.demo;save();renderPanel();draw();refreshThumbs()};
   }
   else if(tab==='text'){
     const keys=usedFields(tpl),f=textsFor(tpl.cat,tpl),L={...LABELS._,...(LABELS[tpl.cat]||{})},order=['n1','fn1','n2','fn2','nick','head','script','sub','big','date','place','from','to','tag','l1','l2','mono','quote','caps'];
     const ks=order.filter(k=>keys.includes(k));
-    P.innerHTML=(ks.length?ks.map(k=>k==='quote'||k==='caps'?`<label class="pn-field field"><span class="pn-label">${L[k]}</span><textarea class="pn-textarea" data-k="${k}" rows="${k==='caps'?2:3}">${esc(S.texts[tpl.cat]?.[k]??f[k])}</textarea></label>`
-        :`<label class="pn-field field"><span class="pn-label">${L[k]}</span><input class="pn-input" data-k="${k}" value="${esc(k==='mono'?(S.texts[tpl.cat]?.mono||''):f[k])}" placeholder="${k==='mono'?esc(f.mono):''}" enterkeyhint="done"></label>`).join(''):'<p class="pn-callout pn-callout--primary note">Mẫu này không có chữ — chỉ có ảnh.</p>')+
-      `<div class="range" style="margin-top:6px"><span>Cỡ chữ</span><input class="pn-range" type="range" id="ts" min=".7" max="1.35" step=".01" value="${S.tscale}"><em id="tsv">${Math.round(S.tscale*100)}%</em></div>
-       <button class="pn-btn pn-btn--sm" id="resetT" style="margin-top:4px">Khôi phục chữ mẫu</button>`;
+    P.innerHTML=(ks.length?ks.map(k=>k==='quote'||k==='caps'?`<label class="field"><span>${L[k]}</span><textarea data-k="${k}" rows="${k==='caps'?2:3}">${esc(S.texts[tpl.cat]?.[k]??f[k])}</textarea></label>`
+        :`<label class="field"><span>${L[k]}</span><input data-k="${k}" value="${esc(k==='mono'?(S.texts[tpl.cat]?.mono||''):f[k])}" placeholder="${k==='mono'?esc(f.mono):''}" enterkeyhint="done"></label>`).join(''):'<p class="note">Mẫu này không có chữ — chỉ có ảnh.</p>')+
+      `<div class="range" style="margin-top:6px"><span>Cỡ chữ</span><input type="range" id="ts" min=".7" max="1.35" step=".01" value="${S.tscale}"><em id="tsv">${Math.round(S.tscale*100)}%</em></div>
+       <button class="chip" id="resetT" style="margin-top:4px">Khôi phục chữ mẫu</button>`;
     P.querySelectorAll('[data-k]').forEach(el=>{el.oninput=()=>{(S.texts[tpl.cat]=S.texts[tpl.cat]||{})[el.dataset.k]=el.value;save();draw();refreshThumbs()};
       if(el.tagName==='INPUT')el.onkeydown=e=>{if(e.key==='Enter')el.blur()}});
     $('#ts').oninput=ev=>{S.tscale=+ev.target.value;$('#tsv').textContent=Math.round(S.tscale*100)+'%';save();draw()};
@@ -166,21 +161,21 @@ function renderPanel(){
     const sws=Object.entries(PALS).map(([k,v])=>`<button class="sw${k===S.pal&&!S.cbg&&!S.ctext&&!S.caccent?' on':''}" data-p="${k}"><i style="background:${v.bg};--t:${v.text};--a:${v.accent}"></i>${v.n}</button>`).join('');
     P.innerHTML=peek?`${flt}<div class="hstrip sws">${sws}<button class="more" data-full>Font, màu<br>& bố cục ›</button></div>`
      :`<div class="sec"><label>Bộ lọc ảnh</label>${flt}
-       <label class="pn-switch toggle"><span>Hạt film</span><input type="checkbox" id="grain"${S.grain?' checked':''}></label>
-       <label class="pn-switch toggle"><span>Dấu ngày kiểu máy film</span><input type="checkbox" id="stamp"${S.stamp?' checked':''}></label></div>
+       <div class="toggle"><span>Hạt film</span><button class="sw2${S.grain?' on':''}" id="grain"></button></div>
+       <div class="toggle"><span>Dấu ngày kiểu máy film</span><button class="sw2${S.stamp?' on':''}" id="stamp"></button></div></div>
      <div class="sec"><label>Bảng màu</label><div class="swgrid">${sws}</div></div>
      <div class="sec"><label>Tuỳ chỉnh màu</label><div class="colors">
        <label class="cpick"><input type="color" data-cc="cbg" value="${P0.bg}">Nền</label><label class="cpick"><input type="color" data-cc="ctext" value="${P0.text}">Chữ</label><label class="cpick"><input type="color" data-cc="caccent" value="${P0.accent}">Nhấn</label></div></div>
      <div class="sec"><label>Bộ font</label><div class="chips">${Object.entries(FP).map(([k,v])=>`<button class="fp${k===S.fp?' on':''}" data-f="${k}"><span class="s1" style="font-family:'${v.display}';font-weight:${v.dw}">Ngọc Hân</span><span class="s2" style="font-family:'${v.script}'">Love story</span><small>${v.n}</small></button>`).join('')}</div></div>
      <div class="sec"><label>Bố cục</label>
-       <div class="range"><span>Khoảng cách ảnh</span><input class="pn-range" type="range" data-r="gap" min="0" max="44" step="1" value="${S.gap}"><em>${S.gap}</em></div>
-       <div class="range"><span>Lề viền</span><input class="pn-range" type="range" data-r="margin" min="16" max="150" step="1" value="${S.margin}"><em>${S.margin}</em></div>
-       <div class="range"><span>Bo góc ảnh</span><input class="pn-range" type="range" data-r="radius" min="0" max="48" step="1" value="${S.radius}"><em>${S.radius}</em></div></div>
-     <button class="pn-btn pn-btn--block" data-reset>↺ Khôi phục cài đặt mặc định</button>`;
+       <div class="range"><span>Khoảng cách ảnh</span><input type="range" data-r="gap" min="0" max="44" step="1" value="${S.gap}"><em>${S.gap}</em></div>
+       <div class="range"><span>Lề viền</span><input type="range" data-r="margin" min="16" max="150" step="1" value="${S.margin}"><em>${S.margin}</em></div>
+       <div class="range"><span>Bo góc ảnh</span><input type="range" data-r="radius" min="0" max="48" step="1" value="${S.radius}"><em>${S.radius}</em></div></div>
+     <button class="bigbtn alt" data-reset>↺ Khôi phục cài đặt mặc định</button>`;
     P.querySelectorAll('[data-fl]').forEach(b=>{const c=b.querySelector('canvas'),x=c.getContext('2d'),s=applyFilter(fsrc,b.dataset.fl),k=Math.max(64/s.width,80/s.height);x.drawImage(s,(64-s.width*k)/2,(80-s.height*k)/2,s.width*k,s.height*k);
       b.onclick=()=>{if(S.filter===b.dataset.fl)return;P.querySelectorAll('[data-fl]').forEach(x=>x.classList.toggle('on',x===b));b.classList.add('wait');requestAnimationFrame(()=>setTimeout(()=>{S.filter=b.dataset.fl;save();draw(true);b.classList.remove('wait')},16))}});
-    if($('#grain')){$('#grain').onchange=()=>{S.grain=$('#grain').checked;save();draw();refreshThumbs()};
-      $('#stamp').onchange=()=>{S.stamp=$('#stamp').checked;save();draw();refreshThumbs()}}
+    if($('#grain')){$('#grain').onclick=()=>{S.grain=!S.grain;save();$('#grain').classList.toggle('on',S.grain);draw();refreshThumbs()};
+      $('#stamp').onclick=()=>{S.stamp=!S.stamp;save();$('#stamp').classList.toggle('on',S.stamp);draw();refreshThumbs()}}
     P.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{S.pal=b.dataset.p;S.cbg=S.ctext=S.caccent=null;save();P.querySelectorAll('[data-p]').forEach(x=>x.classList.toggle('on',x===b));draw();refreshThumbs()});
     P.querySelectorAll('[data-cc]').forEach(i=>i.oninput=()=>{S[i.dataset.cc]=i.value;save();draw();refreshThumbs()});
     P.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{S.fp=b.dataset.f;save();P.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===b));draw();refreshThumbs()});
@@ -192,20 +187,20 @@ function renderPanel(){
     if(peek)P.innerHTML=`<div class="hstrip">${Object.entries(SIZES).filter(([k])=>k!=='custom').map(card).join('')}<button class="more" data-full>Tuỳ chỉnh<br>kích thước ›</button></div>`;
     else{const groups={};Object.entries(SIZES).forEach(([k,v])=>(groups[v.g]=groups[v.g]||[]).push([k,v]));
       P.innerHTML=Object.entries(groups).map(([g,list])=>`<div class="group-t" style="margin-top:14px">${g}</div><div class="sizes">${list.map(card).join('')}</div>`).join('')+
-       `<div class="row2" id="cust" style="${S.size==='custom'?'':'display:none'}"><label class="pn-field field"><span class="pn-label">Rộng (cm)</span><input class="pn-input" type="number" inputmode="decimal" id="cw" value="${S.custW}"></label><label class="pn-field field"><span class="pn-label">Cao (cm)</span><input class="pn-input" type="number" inputmode="decimal" id="ch" value="${S.custH}"></label></div>`}
+       `<div class="row2" id="cust" style="${S.size==='custom'?'':'display:none'}"><label class="field"><span>Rộng (cm)</span><input type="number" inputmode="decimal" id="cw" value="${S.custW}"></label><label class="field"><span>Cao (cm)</span><input type="number" inputmode="decimal" id="ch" value="${S.custH}"></label></div>`}
     P.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.size=b.dataset.s;if(isLand()&&!tplById(S.tpl).land){const t=visibleTpls()[0];if(t){S.tpl=t.id;toast(`Chuyển sang mẫu “${t.n}” hợp khổ ngang`)}}save();
       P.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('on',x===b));if($('#cust'))$('#cust').style.display=S.size==='custom'?'':'none';fitStage();refreshThumbs()});
     if($('#cw')){const cu=()=>{S.custW=clamp(+$('#cw').value||60,5,500);S.custH=clamp(+$('#ch').value||90,5,500);save();fitStage();refreshThumbs()};$('#cw').onchange=cu;$('#ch').onchange=cu}
   }
   else if(tab==='export'){
-    const z=sz(),d=exportDims(),fmt=`<button class="pn-chip" aria-pressed="${S.fmt==='image/jpeg'}" data-fm="image/jpeg">JPG</button><button class="pn-chip" aria-pressed="${S.fmt==='image/png'}" data-fm="image/png">PNG</button>`;
-    const q=z.u==='cm'?[100,150,200,300].map(v=>`<button class="pn-chip" aria-pressed="${S.dpi===v}" data-dpi="${v}">${v} dpi</button>`).join(''):[1,2].map(v=>`<button class="pn-chip" aria-pressed="${S.mult===v}" data-mu="${v}">${v}× ${v===1?'chuẩn':'siêu nét'}</button>`).join('');
+    const z=sz(),d=exportDims(),fmt=`<button class="chip${S.fmt==='image/jpeg'?' on':''}" data-fm="image/jpeg">JPG</button><button class="chip${S.fmt==='image/png'?' on':''}" data-fm="image/png">PNG</button>`;
+    const q=z.u==='cm'?[100,150,200,300].map(v=>`<button class="chip${S.dpi===v?' on':''}" data-dpi="${v}">${v} dpi</button>`).join(''):[1,2].map(v=>`<button class="chip${S.mult===v?' on':''}" data-mu="${v}">${v}× ${v===1?'chuẩn':'siêu nét'}</button>`).join('');
     const dims=`<div class="dims"><div><b>${d.w.toLocaleString('vi')} × ${d.h.toLocaleString('vi')}</b><small>pixel${d.eff?` · ≈ ${d.eff} dpi`:''}</small></div><span>✦</span></div>`;
-    P.innerHTML=peek?`<div class="xrow">${dims}<button class="pn-btn pn-btn--primary pn-btn--lg" id="go">${ICO.export.replace('<svg','<svg width="20" height="20"')} Xuất</button></div><div class="hstrip chipsrow">${fmt}${q}</div>`
+    P.innerHTML=peek?`<div class="xrow">${dims}<button class="bigbtn" id="go">${ICO.export.replace('<svg','<svg width="20" height="20"')} Xuất</button></div><div class="hstrip chipsrow">${fmt}${q}</div>`
      :`<div class="sec"><label>Định dạng</label><div class="chips">${fmt.replace('>JPG<','>JPG · nhẹ, in tốt<').replace('>PNG<','>PNG · không nén<')}</div></div>
      <div class="sec"><label>${z.u==='cm'?'Độ phân giải in':'Độ nét'}</label><div class="chips">${q}</div></div>${dims}
-     ${d.capped?`<p class="pn-callout pn-callout--primary note">Điện thoại giới hạn kích thước ảnh nên file được tối ưu còn ~${d.eff} dpi — vẫn nét cho bản in lớn nhìn từ xa. Cần nét hơn, hãy mở trang trên máy tính để xuất.</p>`:`<p class="pn-callout pn-callout--primary note">${z.u==='cm'?'Ảnh in thường 300 dpi; standee và ảnh cổng 100–150 dpi là đẹp. Gửi file thẳng cho tiệm in.':'Đúng kích thước chuẩn của nền tảng — đăng lên không bị cắt.'}</p>`}
-     <button class="pn-btn pn-btn--primary pn-btn--lg pn-btn--block" id="go">${ICO.export.replace('<svg','<svg width="20" height="20"')} Xuất ảnh ngay</button>`;
+     ${d.capped?`<p class="note">Điện thoại giới hạn kích thước ảnh nên file được tối ưu còn ~${d.eff} dpi — vẫn nét cho bản in lớn nhìn từ xa. Cần nét hơn, hãy mở trang trên máy tính để xuất.</p>`:`<p class="note">${z.u==='cm'?'Ảnh in thường 300 dpi; standee và ảnh cổng 100–150 dpi là đẹp. Gửi file thẳng cho tiệm in.':'Đúng kích thước chuẩn của nền tảng — đăng lên không bị cắt.'}</p>`}
+     <button class="bigbtn" id="go">${ICO.export.replace('<svg','<svg width="20" height="20"')} Xuất ảnh ngay</button>`;
     P.querySelectorAll('[data-fm]').forEach(b=>b.onclick=()=>{S.fmt=b.dataset.fm;save();renderPanel()});
     P.querySelectorAll('[data-dpi]').forEach(b=>b.onclick=()=>{S.dpi=+b.dataset.dpi;save();renderPanel()});
     P.querySelectorAll('[data-mu]').forEach(b=>b.onclick=()=>{S.mult=+b.dataset.mu;save();renderPanel()});
@@ -213,7 +208,6 @@ function renderPanel(){
   }
   P.querySelectorAll('[data-full]').forEach(b=>b.onclick=()=>setMode('full'));
   P.querySelectorAll('[data-reset]').forEach(b=>b.onclick=askReset);
-  if(window.PanicUI)PanicUI.init(P);
 }
 function syncZoom(){const z=$('#zoom');if(z&&sel!=null){z.value=ens(sel).z;$('#zv').textContent=ens(sel).z.toFixed(1)+'×'}}
 
@@ -240,11 +234,11 @@ async function doExport(){
     lastFile=new File([blob],nm,{type:S.fmt});if(lastURL)URL.revokeObjectURL(lastURL);lastURL=URL.createObjectURL(blob);
     const canShare=!!(navigator.canShare&&navigator.canShare({files:[lastFile]}));
     $('#mbox').innerHTML=`<h3>Ảnh đã sẵn sàng ✦</h3><p>${d.w} × ${d.h} px · ${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}</p><div class="mprev"><img src="${lastURL}" alt=""></div>
-      ${canShare?'<button class="pn-btn pn-btn--primary pn-btn--lg pn-btn--block" id="shr">Lưu vào Ảnh / Chia sẻ</button>':''}<a class="pn-btn pn-btn--lg pn-btn--block${canShare?'':' pn-btn--primary'}" href="${lastURL}" download="${nm}">Tải file về máy</a><button class="pn-btn pn-btn--lg pn-btn--block pn-btn--ghost" id="cls">Đóng</button>`;
-    PanicUI.open('#modal');
+      ${canShare?'<button class="bigbtn" id="shr">Lưu vào Ảnh / Chia sẻ</button>':''}<a class="bigbtn ${canShare?'alt':''}" href="${lastURL}" download="${nm}">Tải file về máy</a><button class="bigbtn ghost" id="cls">Đóng</button>`;
+    $('#modal').classList.add('show');
     if(canShare)$('#shr').onclick=()=>navigator.share({files:[lastFile],title:'PaNIC Collage'}).catch(()=>{});
-    $('#cls').onclick=()=>$('#modal').close();
-  }catch(e){toast('Ảnh quá lớn với thiết bị này — hãy giảm dpi rồi xuất lại.','danger')}
+    $('#cls').onclick=()=>$('#modal').classList.remove('show');
+  }catch(e){toast('Ảnh quá lớn với thiết bị này — thử giảm dpi nhé')}
   $('#busy').classList.remove('show');
 }
 
@@ -252,19 +246,19 @@ async function doExport(){
 function welcome(){
   $('#mbox').innerHTML=`<div class="wel"><small>PaNIC Collage Studio</small><h3>Hôm nay bạn muốn ghép ảnh cho dịp gì?</h3>
     <div class="occ">${CATS.filter(c=>c.id!=='all').map(c=>`<button data-o="${c.id}" style="--c1:${c.c[0]};--c2:${c.c[1]};--c3:${c.c[2]}"><span class="oi">${CAT_ICO[c.id]}</span><b>${c.n}</b><small>${c.sub}</small></button>`).join('')}</div>
-    <button class="pn-btn pn-btn--lg pn-btn--block pn-btn--ghost" id="skip">Xem tất cả mẫu</button><button class="pn-btn pn-btn--link linkbtn" data-reset>↺ Khôi phục cài đặt mặc định</button></div>`;
-  PanicUI.open('#modal');
+    <button class="bigbtn ghost" id="skip">Xem tất cả mẫu</button><button class="linkbtn" data-reset>↺ Khôi phục cài đặt mặc định</button></div>`;
+  $('#modal').classList.add('show');
   $('#mbox').querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const c=CATS.find(x=>x.id===b.dataset.o),t=TPL.find(x=>x.cat===c.id);
     S.cat=c.id;S.size=c.size;S.seen=true;if(t)S.tpl=t.id;S.pal={daily:'linen',wedding:'ivory',birthday:'party',event:'linen',travel:'sky',grad:'navy'}[c.id]||S.pal;S.cbg=S.ctext=S.caccent=null;
-    save();$('#modal').close();fitStage();openTab('tpl')});
+    save();$('#modal').classList.remove('show');fitStage();openTab('tpl')});
   $('#mbox').querySelector('[data-reset]').onclick=askReset;
-  $('#skip').onclick=()=>{S.cat='all';S.seen=true;save();$('#modal').close();openTab('tpl')};
+  $('#skip').onclick=()=>{S.cat='all';S.seen=true;save();$('#modal').classList.remove('show');openTab('tpl')};
 }
 
-$('#modal').addEventListener('close',()=>{if(!S.seen){S.seen=true;save()}});
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal'){$('#modal').classList.remove('show');if(!S.seen){S.seen=true;save()}}});
 $('#btnExport').onclick=()=>openTab('export');
 $('#brand').onclick=welcome;
-function toast(m,type){PanicUI.toast({message:m,type:type||'info',duration:2600})}
+let tT=0;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200)}
 
 /* ===== Khởi động ===== */
 const FL=['400 40px "Cormorant Garamond"','500 40px "Cormorant Garamond"','italic 400 40px "Cormorant Garamond"','300 40px "Noto Serif Display"','italic 300 40px "Noto Serif Display"',
@@ -281,9 +275,9 @@ addEventListener('resize',()=>{if(!gd)sheet.style.setProperty('--dh',sheetH(mob(
 /* ===== Khôi phục mặc định ===== */
 function askReset(){
   $('#mbox').innerHTML=`<h3>Khôi phục mặc định?</h3><p>Trang sẽ trở về như lần đầu truy cập: mẫu, bảng màu, font, kích thước, bộ lọc, chữ đã sửa và ảnh đã thêm đều được xoá.</p>
-    <button class="pn-btn pn-btn--danger pn-btn--lg pn-btn--block" id="rsY">↺ Khôi phục</button><button class="pn-btn pn-btn--ghost pn-btn--lg pn-btn--block" id="rsN">Huỷ</button>`;
-  PanicUI.open('#modal');
-  $('#rsN').onclick=()=>$('#modal').close();
+    <button class="bigbtn danger" id="rsY">↺ Khôi phục</button><button class="bigbtn ghost" id="rsN">Huỷ</button>`;
+  $('#modal').classList.add('show');
+  $('#rsN').onclick=()=>$('#modal').classList.remove('show');
   $('#rsY').onclick=()=>{try{localStorage.removeItem(STORE)}catch(e){}location.replace(location.pathname)};
 }
 
@@ -303,5 +297,5 @@ stage.addEventListener('pointerup',e=>{if(!sw||e.pointerId!==sw.id)return;const 
   if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4)swipeTpl(dx<0?1:-1)});
 stage.addEventListener('pointercancel',()=>{sw=null});
 $('#navPrev').onclick=()=>swipeTpl(-1);$('#navNext').onclick=()=>swipeTpl(1);
-addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName)||$('#modal').open)return;
+addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(document.activeElement?.tagName)||$('#modal').classList.contains('show'))return;
   if(e.key==='ArrowRight')swipeTpl(1);else if(e.key==='ArrowLeft')swipeTpl(-1);else if(e.key==='Escape'&&document.body.classList.contains('focus'))$('#focusX').click()});

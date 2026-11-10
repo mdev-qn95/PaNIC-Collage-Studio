@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const cp = require('node:child_process');
-const read = path => fs.readFileSync(path, 'utf8').replace(/\r\n/g, '\n'); // Windows checkout dùng CRLF, git show trả LF
+const read = path => fs.readFileSync(path, 'utf8');
 const baseline = path => cp.execFileSync('git', ['show', `c40a20f:${path}`], {encoding:'utf8'});
 const app = read('assets/js/app.js');
 const oldApp = baseline('assets/js/app.js');
@@ -64,9 +64,6 @@ for(const userAgent of ['Desktop','iPhone']) {
 }
 for(const path of ['assets/js/app.js','assets/css/app.css','index.html'])assert.doesNotMatch(read(path),/mock|class="(?:feet|legs)"/i);
 // Export and editor rendering must remain byte-for-byte unchanged.
-// Lõi xuất ảnh (kích thước → render → toBlob → tên file) phải giữ nguyên; phần giao diện sau đó (hộp thoại, toast) đã chuyển sang PaNIC UI.
-const exportCore = source => source.slice(source.indexOf('function exportDims()'), source.indexOf('lastFile=new File'));
-assert.ok(exportCore(app).includes('c.toBlob(r,S.fmt,.94)'));
-assert.equal(exportCore(app),exportCore(oldApp));
+assert.equal(app.slice(app.indexOf('function exportDims()')),oldApp.slice(oldApp.indexOf('function exportDims()')));
 assert.equal(read('assets/js/engine.js').split('/* ===== Ảnh mẫu')[1],baseline('assets/js/engine.js').split('/* ===== Ảnh mẫu')[1]);
 console.log(`PASS: ${checks} regression scenarios; legacy settings preserved; export/rendering unchanged.`);
